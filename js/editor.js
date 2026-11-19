@@ -7,7 +7,9 @@
 'use strict';
 
 const NS = 'http://www.w3.org/2000/svg';
-const ABCS = window.ABECEDARIOS || [];
+// mismo orden que abecedarios/indice.js (se cargan en paralelo y pueden llegar desordenados)
+const ORDEN_ABC = window.ABECEDARIOS_INDICE || [];
+const ABCS = (window.ABECEDARIOS || []).slice().sort((a, b) => ORDEN_ABC.indexOf(a.id) - ORDEN_ABC.indexOf(b.id));
 const FIRMAS = window.FIRMAS || [];
 const ALTURA_BASE = 320;          // alto normalizado de cualquier letra (unidades del lienzo a escala 1)
 const CLAVE_ACTUAL = 'grafiti-mockup-actual';
@@ -92,6 +94,8 @@ function prepararDefiniciones() {
         for (const p of paths) {
           const path = document.createElementNS(NS, 'path');
           path.setAttribute('d', p);
+          // las letras con huecos (A, B, O…) los traen como subtrazos: evenodd los deja vacíos
+          if (capa === 'f') path.setAttribute('fill-rule', 'evenodd');
           g.appendChild(path);
         }
         if (capa === 'f') {

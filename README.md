@@ -71,3 +71,4 @@ distintos salen a la misma altura y se pueden mezclar en una palabra.
 
 - **Wildstyle lápiz** (`wildstyle`): A, E, L, S, T, U, X
 - **Bubble** (`bubble`): A, E, S, T
+- **Wildstyle dinámico** (`dinamico`): A–Z, extraídas automáticamente de una imagen de referencia

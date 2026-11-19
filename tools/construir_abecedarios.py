@@ -28,6 +28,8 @@ ABECEDARIOS = [
          descripcion="Letras afiladas calcadas de un abecedario a lápiz."),
     dict(id="bubble", nombre="Bubble", modulo="bubble",
          descripcion="Letras redondas con picos de llama, de la pieza del tren."),
+    dict(id="dinamico", nombre="Wildstyle dinámico", modulo="dinamico",
+         descripcion="Letras gruesas con remates afilados, extraídas de una imagen de referencia."),
 ]
 
 def main():
