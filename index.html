@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grafiti Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<header class="barra">
+  <div class="marca">Grafiti<span>Editor</span> <small>mockup</small></div>
+  <form id="form-palabra" class="palabra">
+    <input id="palabra" type="text" placeholder="Escribe una palabra (p. ej. SETA)" maxlength="16" autocomplete="off">
+    <button type="submit" class="btn primario">Escribir</button>
+  </form>
+  <div class="acciones">
+    <button class="btn" id="btn-deshacer" title="Deshacer (Ctrl+Z)">↶</button>
+    <button class="btn" id="btn-rehacer" title="Rehacer (Ctrl+Y)">↷</button>
+    <button class="btn" id="btn-desordenar" title="Inclina y desplaza un poco cada letra">Desordenar</button>
+    <button class="btn" id="btn-vaciar" title="Borra letras, destellos, firmas y dibujo (no el fondo)">Vaciar</button>
+    <span class="sep"></span>
+    <button class="btn" id="btn-guardar">Guardar</button>
+    <select id="sel-disenos" title="Diseños guardados"><option value="">Abrir diseño…</option></select>
+    <button class="btn" id="btn-borrar-diseno" title="Borra el diseño elegido">✕</button>
+    <span class="sep"></span>
+    <button class="btn" id="btn-png">PNG</button>
+    <button class="btn" id="btn-svg">SVG</button>
+    <span class="sep"></span>
+    <button class="btn" id="btn-max" title="Maximizar el lienzo (F)">⛶</button>
+  </div>
+</header>
+
+<!-- Barra flotante en modo maximizado -->
+<div class="flotante" id="flotante">
+  <button class="btn herr" data-herr="seleccionar" title="Seleccionar (V)">↖</button>
+  <button class="btn herr" data-herr="lapiz" title="Lápiz (B)">✎</button>
+  <button class="btn herr" data-herr="goma" title="Goma (E)">⌫</button>
+  <input type="color" data-lapiz="color" title="Color del lápiz">
+  <input type="range" min="2" max="80" step="1" data-lapiz="grosor" title="Grosor">
+  <span class="sep"></span>
+  <button class="btn" data-accion="deshacer" title="Deshacer">↶</button>
+  <button class="btn" data-accion="rehacer" title="Rehacer">↷</button>
+  <button class="btn primario" id="btn-salir-max" title="Salir (Esc)">Salir</button>
+</div>
+
+<main class="app">
+  <aside class="panel izq">
+    <h2>Herramientas</h2>
+    <div class="herramientas">
+      <button class="btn herr" data-herr="seleccionar" title="Seleccionar y mover (V)">↖ Mover</button>
+      <button class="btn herr" data-herr="lapiz" title="Lápiz (B)">✎ Lápiz</button>
+      <button class="btn herr" data-herr="goma" title="Goma (E)">⌫ Goma</button>
+    </div>
+    <div id="opciones-lapiz" class="opciones-lapiz">
+      <div class="ctl" id="ctl-estilo-lapiz"><label>Trazo</label>
+        <select data-lapiz="estilo">
+          <option value="rotulador">Rotulador</option>
+          <option value="spray">Spray</option>
+          <option value="goteo">Goteo</option>
+        </select></div>
+      <div class="ctl" id="ctl-color-lapiz"><label>Color</label><input type="color" data-lapiz="color"></div>
+      <div class="ctl"><label>Grosor</label><input type="range" min="2" max="80" step="1" data-lapiz="grosor"></div>
+      <div class="ctl" id="ctl-opacidad-lapiz"><label>Opacidad</label><input type="range" min="0.1" max="1" step="0.05" data-lapiz="opacidad"></div>
+      <button class="btn" id="btn-borrar-dibujo" title="Borra todo lo pintado con el lápiz">Borrar dibujo</button>
+      <p class="nota">La goma solo borra lo pintado con el lápiz.</p>
+    </div>
+
+    <h2>Letras</h2>
+    <div class="ctl"><label for="sel-abc">Abecedario</label><select id="sel-abc"></select></div>
+    <p id="desc-abc" class="nota"></p>
+    <div class="ctl"><label for="sel-letra">Letra</label><select id="sel-letra"></select></div>
+    <div id="vista-letra" class="vista-letra" draggable="true" title="Arrastra al lienzo o pulsa Añadir"></div>
+    <button class="btn primario ancho" id="btn-anadir-letra">Añadir letra</button>
+    <p class="nota">Puedes arrastrar la letra al lienzo y mezclar abecedarios en una palabra.</p>
+
+    <h2>Añadir</h2>
+    <div class="fila">
+      <button class="btn" id="btn-destello">✦ Destello</button>
+      <button class="btn" id="btn-firma">Firma SETA</button>
+    </div>
+
+    <h2>Atajos</h2>
+    <ul class="atajos">
+      <li><kbd>V</kbd> mover · <kbd>B</kbd> lápiz · <kbd>E</kbd> goma</li>
+      <li><kbd>F</kbd> maximizar · <kbd>Esc</kbd> salir</li>
+      <li><kbd>Mayús</kbd>+clic seleccionar varias</li>
+      <li><kbd>Supr</kbd> borrar · <kbd>Ctrl+D</kbd> duplicar</li>
+      <li><kbd>[</kbd> <kbd>]</kbd> detrás / delante · <kbd>H</kbd> espejo</li>
+      <li><kbd>Rueda</kbd> escalar · <kbd>Alt+rueda</kbd> girar</li>
+    </ul>
+  </aside>
+
+  <section class="lienzo-wrap">
+    <svg id="lienzo" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+    <div id="aviso" class="aviso" hidden></div>
+  </section>
+
+  <aside class="panel der">
+    <h2>Estilos rápidos <small>(letras)</small></h2>
+    <div id="presets" class="presets"></div>
+
+    <h2>Fondos</h2>
+    <div class="fondos">
+      <button class="btn fondo-btn" data-fondo="pared">Pared</button>
+      <button class="btn fondo-btn" data-fondo="liso">Liso</button>
+      <button class="btn fondo-btn" data-fondo="transparente">Transparente</button>
+    </div>
+    <div class="ctl" id="ctl-color-fondo"><label>Color liso</label><input type="color" data-g="fondo" data-k="color"></div>
+    <div class="fila">
+      <button class="btn" id="btn-subir-fondo">Subir imagen…</button>
+      <button class="btn" id="btn-vaciar-fondo">Vaciar fondo</button>
+      <input type="file" id="inp-fondo" accept="image/png,image/jpeg" hidden>
+    </div>
+    <div id="opciones-imagen" hidden>
+      <div class="ctl"><label>Ajuste</label>
+        <select data-g="fondo" data-k="ajuste">
+          <option value="cubrir">Llenar el lienzo</option>
+          <option value="ajustar">Imagen entera</option>
+        </select></div>
+      <div class="ctl"><label>Oscurecer</label><input type="range" min="0" max="80" step="1" data-g="fondo" data-k="oscurecer"></div>
+    </div>
+
+    <div class="ambito">
+      <label><input type="radio" name="ambito" value="todo" checked> Toda la palabra</label>
+      <label><input type="radio" name="ambito" value="sel"> Selección</label>
+    </div>
+    <p id="ambito-nota" class="nota"></p>
+
+    <details open>
+      <summary>Relleno</summary>
+      <div class="ctl"><label>Color</label><input type="color" data-k="relleno"></div>
+      <div class="ctl"><label>Degradado</label><input type="checkbox" data-k="degradado"></div>
+      <div class="ctl"><label>Color 2</label><input type="color" data-k="relleno2"></div>
+    </details>
+
+    <details open>
+      <summary>Contorno</summary>
+      <div class="ctl"><label>Color</label><input type="color" data-k="contorno"></div>
+      <div class="ctl"><label>Grosor</label><input type="range" min="0" max="24" step="1" data-k="grosor"></div>
+      <div class="ctl"><label>Doble contorno</label><input type="checkbox" data-k="doble"></div>
+      <div class="ctl"><label>Color del hueco</label><input type="color" data-k="colorHueco"></div>
+      <div class="ctl"><label>Separación</label><input type="range" min="2" max="20" step="1" data-k="separacion"></div>
+    </details>
+
+    <details open>
+      <summary>Volumen 3D</summary>
+      <div class="ctl"><label>Activo</label><input type="checkbox" data-k="volumen"></div>
+      <div class="ctl"><label>Color</label><input type="color" data-k="colorVolumen"></div>
+      <div class="ctl"><label>Profundidad</label><input type="range" min="2" max="40" step="1" data-k="profundidad"></div>
+      <div class="ctl"><label>Dirección</label><input type="range" min="0" max="359" step="1" data-k="angulo"></div>
+    </details>
+
+    <details open>
+      <summary>Brillos</summary>
+      <div class="ctl"><label>Activos</label><input type="checkbox" data-k="brillos"></div>
+      <div class="ctl"><label>Color</label><input type="color" data-k="colorBrillos"></div>
+      <div class="ctl"><label>Grosor</label><input type="range" min="1" max="12" step="0.5" data-k="grosorBrillos"></div>
+    </details>
+
+    <details>
+      <summary>Sombra</summary>
+      <div class="ctl"><label>Activa</label><input type="checkbox" data-k="sombra"></div>
+      <div class="ctl"><label>Color</label><input type="color" data-k="colorSombra"></div>
+      <div class="ctl"><label>Distancia</label><input type="range" min="0" max="40" step="1" data-k="distSombra"></div>
+      <div class="ctl"><label>Difuminado</label><input type="range" min="0" max="20" step="1" data-k="difSombra"></div>
+    </details>
+
+    <details open>
+      <summary>Nube de fondo <small>(toda la palabra)</small></summary>
+      <div class="ctl"><label>Activa</label><input type="checkbox" data-g="nube" data-k="activa"></div>
+      <div class="ctl"><label>Color</label><input type="color" data-g="nube" data-k="color"></div>
+      <div class="ctl"><label>Tamaño</label><input type="range" min="5" max="90" step="1" data-g="nube" data-k="tamano"></div>
+      <div class="ctl"><label>Difuminado</label><input type="range" min="0" max="25" step="1" data-g="nube" data-k="suavidad"></div>
+      <div class="ctl"><label>Efecto spray</label><input type="range" min="0" max="30" step="1" data-g="nube" data-k="rugosidad"></div>
+    </details>
+
+    <details id="sec-elemento" hidden open>
+      <summary>Elemento seleccionado</summary>
+      <div class="ctl" id="ctl-texto"><label>Texto</label><input type="text" id="inp-texto" maxlength="20"></div>
+      <div class="ctl"><label>Color</label><input type="color" id="inp-color-elem"></div>
+    </details>
+
+    <div class="fila sel-acciones">
+      <button class="btn" id="btn-quitar-propio" title="La letra vuelve a usar el estilo de toda la palabra">Quitar estilo propio</button>
+    </div>
+  </aside>
+</main>
+
+<script src="abecedarios/indice.js"></script>
+<script src="firmas/seta.js"></script>
+<script src="js/cargador.js"></script>
+</body>
+</html>
