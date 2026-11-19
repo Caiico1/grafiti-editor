@@ -2,7 +2,7 @@
 window.ABECEDARIOS = window.ABECEDARIOS || [];
 window.ABECEDARIOS.push({
  "id": "bubble",
- "nombre": "Bubble",
+ "nombre": "Wildstyle 4",
  "descripcion": "Letras redondas con picos de llama, de la pieza del tren.",
  "letras": {
   "S": {

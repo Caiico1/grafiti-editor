@@ -2,7 +2,7 @@
 window.ABECEDARIOS = window.ABECEDARIOS || [];
 window.ABECEDARIOS.push({
  "id": "wildstyle",
- "nombre": "Wildstyle lápiz",
+ "nombre": "Wildstyle 1",
  "descripcion": "Letras afiladas calcadas de un abecedario a lápiz.",
  "letras": {
   "U": {

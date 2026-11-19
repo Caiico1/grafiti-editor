@@ -24,14 +24,14 @@ def redondear(path):
     return PAR.sub(lambda m: f"{float(m.group(1)):.1f},{float(m.group(2)):.1f}", path)
 
 ABECEDARIOS = [
-    dict(id="wildstyle", nombre="Wildstyle lápiz", modulo="wildstyle",
+    dict(id="wildstyle", nombre="Wildstyle 1", modulo="wildstyle",
          descripcion="Letras afiladas calcadas de un abecedario a lápiz."),
-    dict(id="bubble", nombre="Bubble", modulo="bubble",
-         descripcion="Letras redondas con picos de llama, de la pieza del tren."),
-    dict(id="dinamico", nombre="Wildstyle dinámico", modulo="dinamico",
+    dict(id="dinamico", nombre="Wildstyle 2", modulo="dinamico",
          descripcion="Letras gruesas con remates afilados, extraídas de una imagen de referencia."),
-    dict(id="calico", nombre="WildStyle Calico", modulo="calico",
+    dict(id="calico", nombre="Wildstyle 3", modulo="calico",
          descripcion="Letras bubble anchas con remates en punta, extraídas de una imagen de referencia."),
+    dict(id="bubble", nombre="Wildstyle 4", modulo="bubble",
+         descripcion="Letras redondas con picos de llama, de la pieza del tren."),
 ]
 
 def main():

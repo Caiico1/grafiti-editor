@@ -2,7 +2,7 @@
 window.ABECEDARIOS = window.ABECEDARIOS || [];
 window.ABECEDARIOS.push({
  "id": "calico",
- "nombre": "WildStyle Calico",
+ "nombre": "Wildstyle 3",
  "descripcion": "Letras bubble anchas con remates en punta, extraídas de una imagen de referencia.",
  "letras": {
   "A": {

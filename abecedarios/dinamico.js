@@ -2,7 +2,7 @@
 window.ABECEDARIOS = window.ABECEDARIOS || [];
 window.ABECEDARIOS.push({
  "id": "dinamico",
- "nombre": "Wildstyle dinámico",
+ "nombre": "Wildstyle 2",
  "descripcion": "Letras gruesas con remates afilados, extraídas de una imagen de referencia.",
  "letras": {
   "A": {

@@ -1,2 +1,2 @@
 // Generado por tools/construir_abecedarios.py. Lista de abecedarios a cargar.
-window.ABECEDARIOS_INDICE = ["wildstyle", "bubble", "dinamico", "calico"];
+window.ABECEDARIOS_INDICE = ["wildstyle", "dinamico", "calico", "bubble"];
