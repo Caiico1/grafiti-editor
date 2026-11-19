@@ -51,7 +51,7 @@ function nuevoEstado() {
     dibujo: [],
     estilo: { ...ESTILO_BASE },
     nube: { activa: true, color: '#ffe600', tamano: 42, suavidad: 7, rugosidad: 10 },
-    fondo: { tipo: 'pared', color: '#1f2229', imagen: null, ajuste: 'cubrir', oscurecer: 0 },
+    fondo: { tipo: 'pared', color: '#ffffff', imagen: null, ajuste: 'cubrir', oscurecer: 0 },
   };
 }
 
@@ -416,7 +416,9 @@ function escribirPalabra(texto) {
   if (!chars.length) return;
   const faltan = [];
   const piezas = [];
-  for (const ch of chars) {
+  for (let ch of chars) {
+    // sin versión acentuada: se usa la letra base (Á→A, Ü→U); la Ñ se respeta
+    if (!ABCS.some((a) => a.letras[ch]) && ch !== 'Ñ') ch = ch.normalize('NFD')[0];
     const abc = buscarLetra(abcActivo, ch) ? abcActivo : (ABCS.find((a) => a.letras[ch]) || {}).id;
     if (!abc) { faltan.push(ch); continue; }
     piezas.push({ abc, ch, w: anchoEnLienzo(abc, ch, 0.85) });
@@ -794,6 +796,8 @@ function conectarPanel() {
 function conectarFondos() {
   $$('.fondo-btn').forEach((b) => (b.onclick = () => {
     estado.fondo.tipo = b.dataset.fondo;
+    // el liso es blanco salvo que el usuario haya elegido otro color
+    if (b.dataset.fondo === 'liso' && (!estado.fondo.color || estado.fondo.color === '#1f2229')) estado.fondo.color = '#ffffff';
     render(); refrescarPanel(); confirmar();
   }));
   $('#btn-subir-fondo').onclick = () => $('#inp-fondo').click();
